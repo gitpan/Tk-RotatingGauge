@@ -19,12 +19,16 @@ use base qw[ Tk::Derived Tk::Canvas ];
 Construct Tk::Widget 'RotatingGauge';
 
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 
+
+#
+# Populate - Tk internals
+#
 sub Populate {
     my( $self, $args ) = @_;
 
-
+    # create the parent widget, specify our options.
     $self->SUPER::Populate( $args );
     $self->ConfigSpecs(
         -from    => [ 'PASSIVE', undef, undef, 0   ],
@@ -32,6 +36,8 @@ sub Populate {
         -to      => [ 'PASSIVE', undef, undef, 100 ],
         -value   => [ 'METHOD',  undef, undef, undef ],
     );
+
+    # let's wait for canvas to be created before setting the value.
     my $val = exists $args->{-value} ? delete $args->{-value} : 50 ;
     $self->afterIdle( sub{ $self->configure(-value => $val) } );
 
@@ -46,6 +52,11 @@ sub Populate {
 }
 
 
+#
+# $gauge->value( $val );
+#
+# Sets a new value to the gauge. Update the canvas accordingly.
+#
 sub value {
     my ($self, $value) = @_;
 
@@ -88,8 +99,8 @@ Tk::RotatingGauge - a rotating gauge for Tk
 
     use Tk::RotatingGauge;
 
-    my $g = $mw->RotatingGauge(
-    );
+    my $g = $parent->RotatingGauge( @options );
+    $g->value(10.5);
 
 
 
@@ -101,15 +112,61 @@ mileage counters...
 
 
 
-
 =head1 STANDARD OPTIONS
 
-=head1 WIDGET-SPECIFIC OPTIONS
+B<-background>
+
+
+
+=head1 WIDGET OPTIONS
+
+=over 4
+
+
+=item B<-from>
+
+A real value corresponding to the minimum end of the gauge. Default to
+0.
+
+
+=item B<-height>
+
+Specifies a desired window height that the widget should request
+from its geometry manager.
+
+
+=item B<-top>
+
+A real value corresponding to the maximum end of the gauge. Default to
+100.
+
+
+=item B<-value>
+
+The initial value to be shown. Default to 50.
+
+
+=item B<-visible>
+
+The number of values to be displayed. Default to 20.
+
+
+=item B<-width>
+
+Specifies a desired window width that the widget should request
+from its geometry manager.
+
+
+=back
+
+
 
 =head1 METHODS
 
+=head2 $gauge->value($val)
 
-=head2 value($val)
+Sets the value that the gauge should indicate.
+
 
 
 =begin pod-coverage
@@ -119,6 +176,8 @@ This pod section is meant to fool the pod coverage test.
 =head2 Populate
 
 =end pod-coverage
+
+
 
 
 =head1 BUGS
