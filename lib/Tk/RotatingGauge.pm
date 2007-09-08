@@ -19,7 +19,7 @@ use base qw[ Tk::Derived Tk::Canvas ];
 Construct Tk::Widget 'RotatingGauge';
 
 
-our $VERSION   = '0.11';
+our $VERSION   = '0.20';
 
 
 #
@@ -32,6 +32,7 @@ sub Populate {
     $self->SUPER::Populate( $args );
     $self->ConfigSpecs(
         -from    => [ 'PASSIVE', undef, undef, 0        ],
+        -labels  => [ 'PASSIVE', undef, undef, undef    ],
         -policy  => [ 'PASSIVE', undef, undef, 'rotate' ],
         -to      => [ 'PASSIVE', undef, undef, 100      ],
         -visible => [ 'PASSIVE', undef, undef, 20       ],
@@ -65,14 +66,11 @@ sub value {
     my $to     = $self->{Configure}{-to};
 
     # check out-of-bounds.
-    if ( $value < $from ) {
-        my $frac = $value - int($value);
-        $value = $is_strict ? $from : $value % $to + $frac;
-    }
-    if ( $value >= $to ) {
-        my $frac = $value - int($value);
-        $value = $is_strict ? $to : $value % $to + $frac;
-    }
+    my $frac = $value - int($value);
+    $value = $is_strict ? $from : $value % ($to-$from) + $frac
+        if $value < $from;
+    $value = $is_strict ? $to : $value % ($to-$from) + $frac
+        if $value >= $to;
 
     # move the canvas items around.
     my $v  = $self->{Configure}{-value};
@@ -94,6 +92,7 @@ sub _draw_items {
     my $w = $self->{Configure}{-width};
     my $h = $self->{Configure}{-height};
 
+    my $labels  = $self->{Configure}{-labels};
     my $from    = $self->{Configure}{-from};
     my $to      = $self->{Configure}{-to};
     my $visible = $self->{Configure}{-visible};
@@ -108,18 +107,23 @@ sub _draw_items {
 
     # draw ticks $from .. $to.
     foreach my $i ( $from .. $to-1 ) {
-        my $x = $i * $step;
+        my $x    = $i * $step;
+        my $text = defined $labels ?  $labels->[$i] : $i;
         $self->createLine( $x, 0, $x, $h, -tags=>'grid' );
-        $self->createText( $x+$step/2, $h/2, -text=>$i, -tags=>'grid' );
+        $self->createText( $x+$step/2, $h/2, -text=>$text, -tags=>'grid' );
     }
     # draw $visible ticks before $from and after $to.
     foreach my $i ( 0 .. $visible ) {
-        my $x = -($i+1) * $step;
+        # before $from
+        my $x    = -($i+1-$from) * $step;
+        my $text = defined $labels ? $labels->[$to-1-$i] : $to-1-$i;
         $self->createLine( $x, 0, $x, $h, -tags=>'grid' );
-        $self->createText( $x+$step/2, $h/2, -text=>$to-1-$i, -tags=>'grid' );
-        $x = ($to+$i) * $step;
+        $self->createText( $x+$step/2, $h/2, -text=>$text, -tags=>'grid' );
+        # after $to
+        $x    = ($to+$i) * $step;
+        $text = defined $labels ? $labels->[$from+$i] : $from+$i;
         $self->createLine( $x, 0, $x, $h, -tags=>'grid' );
-        $self->createText( $x+$step/2, $h/2, -text=>$from+$i, -tags=>'grid' );
+        $self->createText( $x+$step/2, $h/2, -text=>$text, -tags=>'grid' );
     }
 
 
