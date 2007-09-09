@@ -19,7 +19,7 @@ use base qw[ Tk::Derived Tk::Canvas ];
 Construct Tk::Widget 'RotatingGauge';
 
 
-our $VERSION   = '0.20';
+our $VERSION   = '0.21';
 
 
 #
@@ -31,12 +31,14 @@ sub Populate {
     # create the parent widget, specify our options.
     $self->SUPER::Populate( $args );
     $self->ConfigSpecs(
-        -from    => [ 'PASSIVE', undef, undef, 0        ],
-        -labels  => [ 'PASSIVE', undef, undef, undef    ],
-        -policy  => [ 'PASSIVE', undef, undef, 'rotate' ],
-        -to      => [ 'PASSIVE', undef, undef, 100      ],
-        -visible => [ 'PASSIVE', undef, undef, 20       ],
-        -value   => [ 'METHOD',  undef, undef, undef    ],
+        -box       => [ 'PASSIVE', undef, undef, 'black'  ],
+        -from      => [ 'PASSIVE', undef, undef, 0        ],
+        -indicator => [ 'PASSIVE', undef, undef, 'red'    ],
+        -labels    => [ 'PASSIVE', undef, undef, undef    ],
+        -policy    => [ 'PASSIVE', undef, undef, 'rotate' ],
+        -to        => [ 'PASSIVE', undef, undef, 100      ],
+        -visible   => [ 'PASSIVE', undef, undef, 20       ],
+        -value     => [ 'METHOD',  undef, undef, undef    ],
     );
 
     # store the initial value for after initialization.
@@ -46,10 +48,6 @@ sub Populate {
     # let's wait for canvas to be created before initializing the
     # various canvas items that will compose the gauge.
     $self->afterIdle( sub { $self->_draw_items } );
-
-
-    #$self->createLine( 0, 1,  $w, 1  );
-    #$self->createLine( 0, $h, $w, $h );
 }
 
 
@@ -101,9 +99,16 @@ sub _draw_items {
     $self->{Configure}{-step}  = $step;
 
 
-    # create the line showing the value.
-    $self->createLine( $w/2, 0, $w/2, $h, -fill=>'red', -width=>2);
+    # create the central line showing the value.
+    if ( $self->{Configure}{-indicator} ne 'none' ) {
+        $self->createLine( $w/2, 0, $w/2, $h, -fill=>$self->{Configure}{-indicator}, -width=>2);
+    }
 
+    # create the top / bottom lines if needed.
+    if ( $self->{Configure}{-box} ne 'none' ) {
+        $self->createLine( 0, 1,  $w, 1,  -fill=>$self->{Configure}{-box} );
+        $self->createLine( 0, $h, $w, $h, -fill=>$self->{Configure}{-box} );
+    }
 
     # draw ticks $from .. $to.
     foreach my $i ( $from .. $to-1 ) {
@@ -173,6 +178,12 @@ B<-background>
 =over 4
 
 
+=item B<-box>
+
+Specifies the color of the lines boxing the gauge. If set to C<none>,
+then no box will be drawn. Default to C<black>.
+
+
 =item B<-from>
 
 A real value corresponding to the minimum end of the gauge. Default to
@@ -183,6 +194,12 @@ A real value corresponding to the minimum end of the gauge. Default to
 
 Specifies a desired window height that the widget should request
 from its geometry manager.
+
+
+=item B<-indicator>
+
+Specifies the color of the central indicator. If set to C<none>, then no
+central indicator will be drawn. Default to C<red>.
 
 
 =item B<-policy>
