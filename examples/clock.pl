@@ -1,20 +1,21 @@
 #!/usr/bin/perl
-#
-# This file is part of Tk::RotatingGauge
-# Copyright (c) 2007 Jerome Quelin, all rights reserved.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the same terms as Perl itself.
-#
+# 
+# This file is part of Tk-RotatingGauge
+# 
+# This software is copyright (c) 2007 by Jerome Quelin.
+# 
+# This is free software; you can redistribute it and/or modify it under
+# the same terms as the Perl 5 programming language system itself.
+# 
 
 use strict;
 use warnings;
 
-use FindBin qw[ $Bin ];
+use FindBin qw{ $Bin };
 use lib "$Bin/../lib";
 
 use DateTime;
-use Time::HiRes qw[ time ];
+use Time::HiRes qw{ time };
 use Tk;
 use Tk::RotatingGauge;
 

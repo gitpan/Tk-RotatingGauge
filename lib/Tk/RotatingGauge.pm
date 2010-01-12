@@ -1,25 +1,28 @@
-#
-# This file is part of Tk::RotatingGauge
-# Copyright (c) 2007 Jerome Quelin, all rights reserved.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the same terms as Perl itself.
-#
-
-package Tk::RotatingGauge;
-
+# 
+# This file is part of Tk-RotatingGauge
+# 
+# This software is copyright (c) 2007 by Jerome Quelin.
+# 
+# This is free software; you can redistribute it and/or modify it under
+# the same terms as the Perl 5 programming language system itself.
+# 
 use warnings;
 use strict;
 
-use POSIX qw[ floor ];
+package Tk::RotatingGauge;
+our $VERSION = '1.100120';
+# ABSTRACT: a rotating gauge for tk
+
+use POSIX qw{ floor };
 use Tk;
 use Tk::Canvas;
 
-use base qw[ Tk::Derived Tk::Canvas ];
+use base qw{ Tk::Derived Tk::Canvas };
 Construct Tk::Widget 'RotatingGauge';
 
 
-our $VERSION   = '0.25';
+# -- builders & initializers
+
 
 
 #
@@ -52,11 +55,9 @@ sub Populate {
 }
 
 
-#
-# $gauge->value( $val );
-#
-# Sets a new value to the gauge. Update the canvas accordingly.
-#
+# -- public methods
+
+
 sub value {
     my ($self, $value) = @_;
 
@@ -79,6 +80,8 @@ sub value {
     $self->{Configure}{-value} = $value;
 }
 
+
+# -- private methods
 
 #
 # $gauge->_draw_items;
@@ -156,15 +159,18 @@ sub _draw_items {
 }
 
 
-
 1;
-__END__
+
+
+=pod
 
 =head1 NAME
 
-Tk::RotatingGauge - a rotating gauge for Tk
+Tk::RotatingGauge - a rotating gauge for tk
 
+=head1 VERSION
 
+version 1.100120
 
 =head1 SYNOPSIS
 
@@ -173,126 +179,93 @@ Tk::RotatingGauge - a rotating gauge for Tk
     my $g = $parent->RotatingGauge( @options );
     $g->value(10.5);
 
-
-
 =head1 DESCRIPTION
 
-This perl module provides a new Tk widget representing a gauge where the
-current value always stays at the same place. Think about your old
+This perl module provides a new L<Tk> widget representing a gauge where
+the current value always stays at the same place. Think about your old
 mileage counters...
 
+A rotating gauge item accepts the options described below.
 
+=head1 ATTRIBUTES
 
-=head1 STANDARD OPTIONS
+=head2 -background
 
-B<-background>
+See L<Tk::options> for more information on this standard option.
 
-B<-orient>
+=head2 -orient
 
-See Tk::options for details of the standard options.
+See L<Tk::options> for more information on this standard option.
 
-
-
-=head1 WIDGET OPTIONS
-
-=over 4
-
-
-=item B<-box>
+=head2 -box
 
 Specifies the color of the lines boxing the gauge. If set to C<none>,
 then no box will be drawn. Default to C<black>.
 
-
-=item B<-from>
+=head2 -from
 
 A real value corresponding to the minimum end of the gauge. Default to
 0.
 
-
-=item B<-height>
+=head2 -height
 
 Specifies a desired window height that the widget should request
 from its geometry manager.
 
-
-=item B<-indicator>
+=head2 -indicator
 
 Specifies the color of the central indicator. If set to C<none>, then no
 central indicator will be drawn. Default to C<red>.
 
-
-=item B<-policy>
+=head2 -policy
 
 Define the rotating policy: if set to C<rotate> (default), then
 out of bounds values will be mod-ed to fit in the wanted scale. If set
 to C<strict>, values can't go lower than C<-from> or higher than C<to>.
 
-
-=item B<-top>
+=head2 -to
 
 A real value corresponding to the maximum end of the gauge. Default to
 100.
 
-
-=item B<-value>
+=head2 -value
 
 The initial value to be shown. Default to 50.
 
-
-=item B<-visible>
+=head2 -visible
 
 The number of values to be displayed. Default to 20.
 
-
-=item B<-width>
+=head2 -width
 
 Specifies a desired window width that the widget should request
 from its geometry manager.
 
-
-=back
-
-
-
 =head1 METHODS
 
-=head2 $gauge->value($val)
+=head2 $gauge->value($val);
 
 Sets the value that the gauge should indicate.
 
-
-
-=begin pod-coverage
-
-This pod section is meant to fool the pod coverage test.
-
-=head2 Populate
-
-=end pod-coverage
-
-
-
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<< < bug-tk-rotatinggauge at
-rt.cpan.org> >>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Tk-RotatingGauge>.  I will be
-notified, and then you'll automatically be notified of progress on your
-bug as I make changes.
-
-
+=for Pod::Coverage::TrustPod Populate
 
 =head1 SEE ALSO
 
-C<Tk::RotatingGauge> development takes place on
-L<http://tk-rotatinggauge.googlecode.com> - feel free to join us.
-
-
-You can also look for information on this module at:
+You can find more information on this module at:
 
 =over 4
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/Tk-RotatingGauge>
+
+=item * See open / report bugs
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Tk-RotatingGauge>
+
+=item * Git repository
+
+L<http://github.com/jquelin/tk-rotatinggauge>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
@@ -302,27 +275,20 @@ L<http://annocpan.org/dist/Tk-RotatingGauge>
 
 L<http://cpanratings.perl.org/d/Tk-RotatingGauge>
 
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Tk-RotatingGauge>
-
 =back
-
-
 
 =head1 AUTHOR
 
-Jerome Quelin, C<< <jquelin at cpan.org> >>
+  Jerome Quelin
 
+=head1 COPYRIGHT AND LICENSE
 
+This software is copyright (c) 2007 by Jerome Quelin.
 
-=head1 COPYRIGHT & LICENSE
-
-Copyright (c) 2007 Jerome Quelin, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
 
+
+__END__
