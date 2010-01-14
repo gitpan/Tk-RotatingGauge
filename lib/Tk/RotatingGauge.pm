@@ -6,11 +6,12 @@
 # This is free software; you can redistribute it and/or modify it under
 # the same terms as the Perl 5 programming language system itself.
 # 
+use 5.008;
 use warnings;
 use strict;
 
 package Tk::RotatingGauge;
-our $VERSION = '1.100120';
+our $VERSION = '1.100140';
 # ABSTRACT: a rotating gauge for tk
 
 use POSIX qw{ floor };
@@ -170,7 +171,7 @@ Tk::RotatingGauge - a rotating gauge for tk
 
 =head1 VERSION
 
-version 1.100120
+version 1.100140
 
 =head1 SYNOPSIS
 
@@ -292,3 +293,4 @@ the same terms as the Perl 5 programming language system itself.
 
 
 __END__
+
